@@ -12,16 +12,27 @@ import (
 	"github.com/go-chi/chi"
 	chiMiddleware "github.com/go-chi/chi/middleware"
 	"github.com/simple-web-app/rest"
+	"github.com/simple-web-app/service"
 )
 
 func serveRest() error {
+	svc := service.NewService()
+
 	hlthHndlr := rest.NewHealthHandler()
+	usrHndlr := rest.NewUserHandler(svc)
+	shopHndlr := rest.NewShopHandler(svc)
+	productHndlr := rest.NewProductHandler(svc)
+	brandHndlr := rest.NewBrandHandler(svc)
 
 	r := chi.NewRouter()
 	r.Use(chiMiddleware.Logger)
 	r.Use(chiMiddleware.Recoverer)
 
 	r.Mount("/api/health", hlthHndlr.Router())
+	r.Mount("/api/v1/users", usrHndlr.Router())
+	r.Mount("/api/v1/shops", shopHndlr.Router())
+	r.Mount("/api/v1/products", productHndlr.Router())
+	r.Mount("/api/v1/brands", brandHndlr.Router())
 
 	timeout := 30 * time.Second
 	srvr := http.Server{

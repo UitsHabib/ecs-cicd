@@ -45,9 +45,7 @@ func ServeJSON(w http.ResponseWriter, code Code, status int, message string, dat
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
-	var resp interface{}
-
-	resp = &Response{
+	resp := &Response{
 		Code:    code,
 		Status:  status,
 		Message: message,
